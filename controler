@@ -1,0 +1,43 @@
+const user = require('../model/user');
+const  jwt = require("jsonwebtoken")
+
+const register = async (req,res)=>{
+    const {email,password,phoneNumber,username} = req.body;
+    try {
+        const userdata = await user.findOne({email});
+        if(userdata == null){
+            const newUser = await user.create(req.body);
+            newUser.save();
+            res.status(200).json({message:'created account ' , newUser:newUser});
+        }else{
+            res.status(404).json({message:'already account used email try to login'})
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message:'error coming register'});
+    }
+};
+
+const login = async (req,res)=>{
+    const {email,password} = req.body;
+    try {
+        const userLogin = await user.findOne({email});
+        if(userLogin == null ){
+            res.status(401).json({message:'email not not exist'});
+        }else{
+            if(userLogin.password==password){
+                const id = userLogin._id;
+                const token = jwt.sign({id}, "yELolcJ2xVZ4UOfmkMwY1Pxq2aHi0RR9", {expiresIn:"7d"});
+                res.status(200).json({message:'sucessfully login', userData:userLogin, tokenData:token});
+            }else{
+                res.status(500).json({message:'invalid password'});
+            }
+        } 
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message:'error is account login'})
+        
+    }
+};
+
+module.exports = {register,login};
