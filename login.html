@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <section class="container">
+
+        <div class="card">
+            <h3>Login</h3><br>
+            <hr>
+            <br>
+            <label for="email">Email address</label>
+            <input type="email" name="email" id="email_address" placeholder="example@gmail.com">
+
+            <label for="pass">Password</label>
+            <input type="password" name="password" id="pass" placeholder="Enter your password">
+
+            <button type="button" onclick="handleLogin()">Login</button>
+
+            <p>Do you don't have an account? <a href="./register.html">Create account</a></p>
+
+        </div>
+
+    </section>
+
+    <script>
+         var emailInput = document.getElementById("email_address");
+         var passwordInput = document.getElementById("pass");
+          function handleLogin(){
+            const data = {
+               email:emailInput.value,
+               password:passwordInput.value
+            }
+            axios.post("http://localhost:3000/api/login", data)
+            .then(res => {
+                console.log(res);
+                if(res.status==200){
+                    alert("login is successfull");
+                    console.log(res);
+                    localStorage.setItem("token", res.data.tokenData);
+                    window.location.href = "./home.html";
+                }else{
+                    alert("something went wrong try again later")
+                }
+                
+            })
+            .catch(err => {
+                console.log(err);
+                
+            })
+        }
+    </script>
+    
+</body>
+</html>

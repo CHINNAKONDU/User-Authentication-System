@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <section class="container">
+
+        <div class="card">
+            <h3>Create account</h3><br>
+            <hr>
+            <br>
+
+              <label for="name">Username</label>
+            <input type="text" name="username" id="names" placeholder="Enter your name">
+
+              <label for="phone_number">Phone number</label>
+            <input type="tel" name="phone" id="phone_number" placeholder="+91 000-0000-000" minlength="10" maxlength="13">
+
+
+            <label for="email">Email address</label>
+            <input type="email" name="email" id="email_address" placeholder="example@gmail.com">
+
+            <label for="pass">Password</label>
+            <input type="password" name="password" id="pass" placeholder="Enter your password">
+
+            <button type="button" onclick="handleRegister()">Create account</button>
+
+            <p>Do you have an already account? <a href="./login.html">Login</a></p>
+
+        </div>
+
+    </section>
+
+
+    <script>
+        var usernameInput = document.getElementById("names");
+        var phoneInput = document.getElementById("phone_number");
+         var emailInput = document.getElementById("email_address");
+        var passwordInput = document.getElementById("pass");
+
+
+        function handleRegister(){
+            const data = {
+                username:usernameInput.value,
+               email:emailInput.value,
+               phoneNumber:phoneInput.value,
+               password:passwordInput.value
+            }
+            axios.post("http://localhost:3000/api/register", data)
+            .then(res => {
+                console.log(res);
+                if(res.status==200){
+                    alert("Account created successfully")
+                }else{
+                    alert("something went wrong try again later")
+                }
+                
+            })
+            .catch(err => {
+                console.log(err);
+                
+            })
+        }
+    </script>
+    
+</body>
+</html>
