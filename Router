@@ -1,1 +1,43 @@
 
+const express =  require('express');
+const { register, login } = require('../controler/user');
+const jwt = require("jsonwebtoken")
+const user = require("../model/user")
+
+const router = express.Router();
+
+const authMiddleware = async(req, res, next) => {
+    try {
+        const authHeader = req.header('Authorization');
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'No token, access denied' });
+        }
+
+        const token = authHeader.replace('Bearer ', '');
+           const decoded = jwt.verify(token, 'yELolcJ2xVZ4UOfmkMwY1Pxq2aHi0RR9');
+           const userData = await user.findById(decoded.id);
+
+           if(!userData){
+           return res.status(404).json({isValid:false, message:"user not found"});
+           }
+
+           req.user = userData;
+           next();
+
+
+
+
+    } catch (error) {
+          console.error('JWT Error:', err.message);
+    res.status(401).json({ message: 'Token is not valid' });
+    }
+}
+
+router.post('/register',register);
+router.post('/login',login);
+
+router.get("/verify",  authMiddleware, async(req, res) => {
+    res.status(200).json({isValid:true, userData:req.user});
+})
+
+module.exports = router;
